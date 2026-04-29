@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="View your booked event tickets, check booking status and payment details.">
+    <title>EventHub - My Bookings</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div class="bg-mesh"></div>
+    <div class="bg-blob blob-1"></div>
+    <div class="bg-blob blob-2"></div>
+
+    <nav>
+        <a href="index.html" style="text-decoration: none;"><h1>EventHub</h1></a>
+        <div class="nav-links" id="nav-right">
+            <!-- Injected by api.js -->
+        </div>
+    </nav>
+
+    <div class="toast-container" id="toastContainer"></div>
+
+    <div class="container">
+        <div class="hero" style="padding-bottom: 1rem;">
+            <h2>My Bookings</h2>
+            <p>Track your event bookings and payment status.</p>
+        </div>
+
+        <div id="statusMessage"></div>
+
+        <!-- Bookings List -->
+        <div id="bookingsList">
+            <div class="glass skeleton-card" style="height: 120px; margin-bottom: 1rem;"></div>
+            <div class="glass skeleton-card" style="height: 120px; margin-bottom: 1rem;"></div>
+        </div>
+    </div>
+
+    <footer>
+        <p>© 2026 <span class="footer-brand">EventHub</span> — Event & Ticket Management System</p>
+    </footer>
+
+    <script src="js/api.js"></script>
+    <script src="js/mybookings.js"></script>
+</body>
+</html>

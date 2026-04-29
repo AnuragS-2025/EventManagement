@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="EventHub Admin Dashboard - Manage events, bookings, and track revenue in real-time.">
+    <title>EventHub - Admin Dashboard</title>
+    <link rel="stylesheet" href="css/style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div class="bg-mesh"></div>
+    <div class="bg-blob blob-1"></div>
+
+    <nav>
+        <a href="index.html" style="text-decoration: none;"><h1>EventHub Admin</h1></a>
+        <div class="nav-links" id="nav-right">
+            <!-- Injected by api.js -->
+        </div>
+    </nav>
+
+    <!-- Toast Notifications -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <div class="container">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+            <div>
+                <h1 style="font-size: 1.8rem; margin: 0;">Dashboard Overview</h1>
+                <p style="color: var(--text-dim); margin: 0;">Welcome back, Administrator.</p>
+            </div>
+            <div style="display: flex; gap: 1rem;">
+                <button class="btn-outline" style="border-radius: 50px; padding: 0.6rem 1.2rem;" onclick="seedDemoData()">✨ Populate Demo Data</button>
+                <button class="btn" style="border-radius: 50px; padding: 0.6rem 1.2rem;" onclick="openEventModal()">+ Create Event</button>
+            </div>
+        </div>
+
+        <!-- Analytics Header -->
+        <div class="section-header">
+            <h2>📈 Performance Analysis</h2>
+            <p style="color: var(--text-dim); font-size: 0.9rem;">Real-time insights into revenue, ticket sales, and booking trends.</p>
+        </div>
+        
+        <div class="analytics-row">
+            <div class="glass chart-card main-chart">
+                <div class="chart-header">
+                    <h4>Revenue Performance (Top Events)</h4>
+                </div>
+                <div class="chart-container">
+                    <canvas id="revenueChart"></canvas>
+                </div>
+            </div>
+            
+            <div class="glass chart-card side-chart">
+                <div class="chart-header">
+                    <h4>Ticket Occupancy</h4>
+                </div>
+                <div class="chart-container">
+                    <canvas id="occupancyChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <div class="analytics-row" style="margin-top: 1.5rem;">
+            <div class="glass chart-card" style="flex: 1;">
+                <div class="chart-header">
+                    <h4>Booking Conversion Status</h4>
+                </div>
+                <div class="chart-container" style="height: 250px;">
+                    <canvas id="statusChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <div class="section-header" style="margin-top: 3rem;">
+            <h2>📊 Detailed Statistics</h2>
+        </div>
+        <!-- Dashboard Stats -->
+        <div class="stats-grid" id="statsGrid">
+            <div class="glass stat-card purple">
+                <div class="stat-icon">📅</div>
+                <div class="stat-value" id="statEvents">-</div>
+                <div class="stat-label">Total Events</div>
+            </div>
+            <div class="glass stat-card cyan">
+                <div class="stat-icon">🎟️</div>
+                <div class="stat-value" id="statTickets">-</div>
+                <div class="stat-label">Tickets Sold</div>
+            </div>
+            <div class="glass stat-card green">
+                <div class="stat-icon">💰</div>
+                <div class="stat-value" id="statRevenue">-</div>
+                <div class="stat-label">Total Revenue</div>
+            </div>
+            <div class="glass stat-card amber">
+                <div class="stat-icon">⏳</div>
+                <div class="stat-value" id="statPending">-</div>
+                <div class="stat-label">Pending Payments</div>
+            </div>
+        </div>
+
+        <div id="statusMessage"></div>
+
+        <!-- Event Management Section -->
+        <div class="section-header">
+            <h2>📅 Event Management</h2>
+            <button class="btn" onclick="openEventModal()">+ Create Event</button>
+        </div>
+
+        <div class="glass table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Event</th>
+                        <th>Date & Time</th>
+                        <th>Venue</th>
+                        <th>Sold / Total</th>
+                        <th>Occupancy</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="eventsTableBody">
+                    <tr><td colspan="6"><div class="skeleton skeleton-row"></div></td></tr>
+                    <tr><td colspan="6"><div class="skeleton skeleton-row"></div></td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Bookings Section -->
+        <div class="section-header" style="margin-top: 3rem;">
+            <h2>📋 All Bookings</h2>
+            <span style="color: var(--text-dim); font-size: 0.9rem;" id="bookingCount"></span>
+        </div>
+
+        <div class="glass filter-bar">
+            <input type="text" id="filterCustomer" placeholder="🔍 Search customer..." oninput="handleBookingFilterSort()">
+            <input type="text" id="filterEvent" placeholder="🔍 Search event..." oninput="handleBookingFilterSort()">
+            <select id="filterStatus" onchange="handleBookingFilterSort()">
+                <option value="">All Status</option>
+                <option value="pending">Pending</option>
+                <option value="paid">Paid</option>
+            </select>
+            <select id="sortBookings" onchange="handleBookingFilterSort()">
+                <option value="date_desc">Newest First</option>
+                <option value="date_asc">Oldest First</option>
+                <option value="tickets_desc">Most Tickets</option>
+            </select>
+        </div>
+
+        <div class="glass table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Customer</th>
+                        <th>Event</th>
+                        <th>Tickets</th>
+                        <th>Amount</th>
+                        <th>Status</th>
+                        <th>Date</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="bookingsTableBody">
+                    <tr><td colspan="8"><div class="skeleton skeleton-row"></div></td></tr>
+                    <tr><td colspan="8"><div class="skeleton skeleton-row"></div></td></tr>
+                    <tr><td colspan="8"><div class="skeleton skeleton-row"></div></td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Event Modal (Create / Edit) -->
+    <div class="modal" id="eventModal">
+        <div class="glass modal-content">
+            <div class="modal-header">
+                <h3 id="modalTitle">Create Event</h3>
+                <button class="modal-close" onclick="closeEventModal()">&times;</button>
+            </div>
+            <div id="modalAlert"></div>
+            <form id="eventForm">
+                <input type="hidden" id="eventId">
+                <div class="form-group">
+                    <label>Event Name</label>
+                    <input type="text" id="eventName" required placeholder="Enter event name">
+                </div>
+                <div class="form-group">
+                    <label>Description</label>
+                    <textarea id="eventDesc" rows="3" required placeholder="Describe your event..."></textarea>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Date</label>
+                        <input type="date" id="eventDate" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Time</label>
+                        <input type="time" id="eventTime" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Venue</label>
+                    <input type="text" id="eventVenue" required placeholder="Event venue">
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Category</label>
+                        <select id="eventCategory">
+                            <option value="Music">Music</option>
+                            <option value="Tech">Tech</option>
+                            <option value="Conference">Conference</option>
+                            <option value="Workshop">Workshop</option>
+                            <option value="Sports">Sports</option>
+                            <option value="Food">Food</option>
+                            <option value="General">General</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Image URL (Optional)</label>
+                    <input type="url" id="eventImageUrl" placeholder="https://example.com/image.jpg">
+                    <small style="color: var(--text-dim);">Leave empty to use automatic keyword-based images.</small>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Total Tickets</label>
+                        <input type="number" id="eventTickets" required min="1" placeholder="e.g. 500">
+                    </div>
+                    <div class="form-group">
+                        <label>Ticket Price (₹)</label>
+                        <input type="number" id="eventPrice" min="0" step="0.01" placeholder="e.g. 250">
+                    </div>
+                </div>
+                <button type="submit" class="btn" style="width: 100%; padding: 0.85rem; font-size: 1rem;">
+                    Save Event
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <p>© 2026 <span class="footer-brand">EventHub</span> — Admin Dashboard</p>
+    </footer>
+
+    <script src="js/api.js"></script>
+    <script src="js/admin.js"></script>
+</body>
+</html>

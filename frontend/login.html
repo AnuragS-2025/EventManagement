@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Sign in or create an account to book event tickets on EventHub.">
+    <title>EventHub - Sign In</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div class="bg-mesh"></div>
+    <div class="bg-blob blob-1"></div>
+    <div class="bg-blob blob-2"></div>
+
+    <div class="auth-container">
+        <!-- Login Form -->
+        <div class="glass auth-box" id="loginBox">
+            <h2>Welcome Back</h2>
+            <p class="auth-subtitle">Sign in to continue booking events</p>
+            <div id="loginAlert"></div>
+            <form id="loginForm">
+                <div class="form-group">
+                    <label>Email Address</label>
+                    <input type="email" id="loginEmail" required placeholder="you@example.com">
+                </div>
+                <div class="form-group">
+                    <label>Password</label>
+                    <input type="password" id="loginPassword" required placeholder="••••••••">
+                </div>
+                <button type="submit" class="btn" style="width:100%; margin-top: 1rem; padding: 0.85rem; font-size: 1rem;">Sign In →</button>
+            </form>
+            <div class="auth-toggle">
+                New here? <span onclick="toggleAuth()">Create an account</span>
+            </div>
+        </div>
+
+        <!-- Register Form -->
+        <div class="glass auth-box hidden" id="registerBox">
+            <h2>Create Account</h2>
+            <p class="auth-subtitle">Join EventHub and start booking today</p>
+            <div id="registerAlert"></div>
+            <form id="registerForm">
+                <div class="form-group">
+                    <label>Full Name</label>
+                    <input type="text" id="regName" required placeholder="John Doe">
+                </div>
+                <div class="form-group">
+                    <label>Email Address</label>
+                    <input type="email" id="regEmail" required placeholder="you@example.com">
+                </div>
+                <div class="form-group">
+                    <label>Password</label>
+                    <input type="password" id="regPassword" required placeholder="Minimum 6 characters">
+                </div>
+                <div class="form-group">
+                    <label>Role</label>
+                    <select id="regRole">
+                        <option value="customer">Customer</option>
+                        <option value="admin">Administrator</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn" style="width:100%; margin-top: 1rem; padding: 0.85rem; font-size: 1rem;">Create Account →</button>
+            </form>
+            <div class="auth-toggle">
+                Already have an account? <span onclick="toggleAuth()">Sign In</span>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/api.js"></script>
+    <script src="js/auth.js"></script>
+</body>
+</html>

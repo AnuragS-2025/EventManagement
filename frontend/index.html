@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="EventHub - Discover and book tickets for the best events around you. Browse upcoming concerts, conferences, and festivals.">
+    <title>EventHub - Discover & Book Events</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div class="bg-mesh"></div>
+    <div class="bg-blob blob-1"></div>
+    <div class="bg-blob blob-2"></div>
+    <div class="bg-blob blob-3"></div>
+
+    <nav>
+        <a href="index.html" style="text-decoration: none;"><h1>EventHub</h1></a>
+        <div class="nav-links" id="nav-right">
+            <!-- Injected by api.js -->
+        </div>
+    </nav>
+
+    <!-- Toast Notifications -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <div class="container">
+        <!-- Hero Section -->
+        <div class="hero">
+            <h2>Discover Amazing Events</h2>
+            <p>Book tickets for concerts, conferences, festivals and more. Pay conveniently at the venue.</p>
+            
+            <!-- Search & Sort Bar -->
+            <div class="search-bar">
+                <div class="search-wrapper">
+                    <span class="search-icon">🔍</span>
+                    <input type="text" id="eventSearch" placeholder="Search events by name, venue..." oninput="handleFilterSort()">
+                </div>
+                <select id="eventSort" class="glass" onchange="handleFilterSort()" style="padding: 0.75rem 1.25rem; border-radius: 50px; background: var(--surface); border: 1px solid var(--glass-border); color: white; outline: none; transition: var(--transition); font-size: 0.95rem; font-family: inherit; cursor: pointer;">
+                    <option value="date_asc">Date (Soonest)</option>
+                    <option value="date_desc">Date (Latest)</option>
+                    <option value="price_asc">Price (Low to High)</option>
+                    <option value="price_desc">Price (High to Low)</option>
+                    <option value="popular">Most Popular</option>
+                </select>
+            </div>
+
+            <!-- Category Filter Pills -->
+            <div class="category-pills" id="categoryPills">
+                <button class="pill active" onclick="setCategoryFilter('All')">All</button>
+                <button class="pill" onclick="setCategoryFilter('Music')">🎵 Music</button>
+                <button class="pill" onclick="setCategoryFilter('Tech')">💻 Tech</button>
+                <button class="pill" onclick="setCategoryFilter('Conference')">🤝 Conference</button>
+                <button class="pill" onclick="setCategoryFilter('Workshop')">🎨 Workshop</button>
+                <button class=" pill" onclick="setCategoryFilter('Sports')">⚽ Sports</button>
+                <button class="pill" onclick="setCategoryFilter('Food')">🍕 Food</button>
+            </div>
+        </div>
+
+        <div id="statusMessage"></div>
+
+        <!-- Skeleton Loading -->
+        <div class="events-grid" id="skeletonGrid">
+            <div class="skeleton skeleton-card"></div>
+            <div class="skeleton skeleton-card"></div>
+            <div class="skeleton skeleton-card"></div>
+        </div>
+
+        <!-- Events Grid -->
+        <div class="events-grid hidden" id="eventsGrid"></div>
+    </div>
+
+    <!-- Booking Modal -->
+    <div class="modal" id="bookingModal">
+        <div class="glass modal-content">
+            <div class="modal-header">
+                <h3>🎫 Book Tickets</h3>
+                <button class="modal-close" onclick="closeBookingModal()">&times;</button>
+            </div>
+            <div id="bookingAlert"></div>
+            <form id="bookingForm">
+                <input type="hidden" id="bookEventId">
+                <input type="hidden" id="bookTicketPrice">
+                
+                <div class="form-group">
+                    <label>Event</label>
+                    <input type="text" id="bookEventName" readonly style="background: rgba(255,255,255,0.03); color: #a78bfa; font-weight: 600;">
+                </div>
+                
+                <div class="form-group">
+                    <label>Number of Tickets</label>
+                    <div class="ticket-counter">
+                        <button type="button" onclick="adjustQuantity(-1)">−</button>
+                        <input type="number" id="bookQuantity" min="1" required value="1" onchange="updatePriceSummary()">
+                        <button type="button" onclick="adjustQuantity(1)">+</button>
+                    </div>
+                    <small style="color: var(--text-dim); font-size: 0.8rem; margin-top: 0.3rem; display: block;">
+                        <span id="availableText">0 tickets available</span>
+                    </small>
+                </div>
+
+                <!-- Live Price Summary -->
+                <div class="price-summary">
+                    <div class="price-row">
+                        <span>Price per ticket</span>
+                        <span class="amount" id="pricePerTicket">₹0</span>
+                    </div>
+                    <div class="price-row">
+                        <span>Quantity</span>
+                        <span class="amount" id="priceQuantity">1</span>
+                    </div>
+                    <div class="price-row total">
+                        <span>Total Amount</span>
+                        <span class="amount" id="priceTotal">₹0</span>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn" style="width: 100%; padding: 0.85rem; font-size: 1rem; margin-top: 0.5rem;">
+                    ✓ Confirm Booking (Pay at Venue)
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <p>© 2026 <span class="footer-brand">EventHub</span> — Event & Ticket Management System</p>
+    </footer>
+
+    <script src="js/api.js"></script>
+    <script src="js/events.js"></script>
+</body>
+</html>
